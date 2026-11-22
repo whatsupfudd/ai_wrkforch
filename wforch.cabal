@@ -1,0 +1,179 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.39.6.
+--
+-- see: https://github.com/sol/hpack
+
+name:           wforch
+version:        0.1.0.0
+synopsis:       Workflow orchestration engine with hierarchical state machines and dataflow
+description:    Independent workflow orchestration engine based on hierarchical finite state machines, compiled workflow specifications, durable execution, activities, dataflow, history, migration, and PostgreSQL-backed runtime operations. Extracted from the ai_hfsm demonstration project.
+category:       Control
+author:         Hugo DesRosiers
+maintainer:     Hugo DesRosiers
+copyright:      Copyright (c) 2026 Hugo DesRosiers
+license:        BSD-3-Clause
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+library
+  exposed-modules:
+      Demo.ActivityRegression
+      Demo.ApprovalHfsm
+      Demo.ApprovalRuntime
+      Demo.CommitTurnRegression
+      Demo.DistributedPostgresRegression
+      Demo.DistributedSafetyRegression
+      Demo.FlowDynamicPostgresRegression
+      Demo.FlowDynamicRegression
+      Demo.FlowPostgresRegression
+      Demo.FlowRegression
+      Demo.HistoryRegression
+      Demo.MemoryStore
+      Demo.OperationsChaosProcess
+      Demo.OperationsChaosRegression
+      Demo.OperationsRegression
+      Demo.Print
+      WfOrch.Activity.Policy
+      WfOrch.Activity.Provider.Enqueue
+      WfOrch.Activity.Provider.Http
+      WfOrch.Activity.Types
+      WfOrch.Activity.Worker
+      WfOrch.Check.Report
+      WfOrch.Compile
+      WfOrch.Compile.Exec
+      WfOrch.Core
+      WfOrch.Core.Codec
+      WfOrch.Core.Digest
+      WfOrch.Core.Error
+      WfOrch.Core.Meta
+      WfOrch.Core.Name
+      WfOrch.Core.Path
+      WfOrch.Core.Ref
+      WfOrch.Core.Version
+      WfOrch.Export.Graphviz
+      WfOrch.Export.Json
+      WfOrch.Export.Mermaid
+      WfOrch.Export.Scxml
+      WfOrch.Flow.Dynamic.Postgres
+      WfOrch.Flow.Dynamic.Postgres.Statements
+      WfOrch.Flow.Dynamic.Provider
+      WfOrch.Flow.Dynamic.Runtime
+      WfOrch.Flow.Dynamic.Spec
+      WfOrch.Flow.Dynamic.Types
+      WfOrch.Flow.Postgres
+      WfOrch.Flow.Postgres.Statements
+      WfOrch.Flow.Provider.Start
+      WfOrch.Flow.Runtime
+      WfOrch.Flow.Spec
+      WfOrch.Flow.Types
+      WfOrch.Flow.Worker
+      WfOrch.Graph.Def
+      WfOrch.Graph.Index
+      WfOrch.History.Postgres
+      WfOrch.History.Release
+      WfOrch.History.Replay
+      WfOrch.History.Statements
+      WfOrch.History.Types
+      WfOrch.Migrate.Check
+      WfOrch.Migrate.Diff
+      WfOrch.Migrate.Plan
+      WfOrch.Migrate.Run
+      WfOrch.Migration.PinnedEnqueue
+      WfOrch.Migration.Plan
+      WfOrch.Migration.Postgres
+      WfOrch.Migration.Replay
+      WfOrch.Migration.Statements
+      WfOrch.Migration.Types
+      WfOrch.Operations.Fault
+      WfOrch.Operations.Metrics
+      WfOrch.Operations.Postgres
+      WfOrch.Operations.Postgres.Statements
+      WfOrch.Operations.Projection
+      WfOrch.Operations.Provider.Enqueue
+      WfOrch.Operations.Provider.HttpTraced
+      WfOrch.Operations.Runtime
+      WfOrch.Operations.Trace
+      WfOrch.Operations.Traced
+      WfOrch.Operations.Types
+      WfOrch.Proj.Active
+      WfOrch.Proj.Queue
+      WfOrch.Proj.Rebuild
+      WfOrch.Proj.Trace
+      WfOrch.Proj.Tree
+      WfOrch.Render.Print
+      WfOrch.Runtime.Engine.Break
+      WfOrch.Runtime.Engine.Lease
+      WfOrch.Runtime.Engine.Step
+      WfOrch.Runtime.Engine.Worker
+      WfOrch.Runtime.Model
+      WfOrch.Runtime.Model.Break
+      WfOrch.Runtime.Model.Child
+      WfOrch.Runtime.Model.Instance
+      WfOrch.Runtime.Model.Outbox
+      WfOrch.Runtime.Model.Signal
+      WfOrch.Runtime.Model.Snapshot
+      WfOrch.Runtime.Model.Step
+      WfOrch.Runtime.Registry
+      WfOrch.Spec.Build
+      WfOrch.Spec.Case
+      WfOrch.Spec.Def
+      WfOrch.Spec.Indexed
+      WfOrch.Spec.Route
+      WfOrch.Store.Class
+      WfOrch.Store.Postgres
+      WfOrch.Store.Postgres.Activity
+      WfOrch.Store.Postgres.Activity.Statements
+      WfOrch.Store.Postgres.Activity.Transaction
+      WfOrch.Store.Postgres.Bootstrap
+      WfOrch.Store.Postgres.Codec
+      WfOrch.Store.Postgres.Statements
+      WfOrch.Store.Postgres.Transaction
+      WfOrch.Store.Postgres.Types
+      WfOrch.Validate.Error
+      WfOrch.Validate.History
+      WfOrch.Validate.Join
+      WfOrch.Validate.Reach
+      WfOrch.Validate.Report
+      WfOrch.Validate.Route
+      WfOrch.Validate.Struct
+      WfOrch.Validate.Version
+      WfOrch.Validate.Wait
+  other-modules:
+      Paths_wforch
+  autogen-modules:
+      Paths_wforch
+  hs-source-dirs:
+      src
+  default-extensions:
+      OverloadedStrings
+      DuplicateRecordFields
+      OverloadedRecordDot
+  ghc-options: -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      aeson
+    , base >=4.18 && <5
+    , bytestring
+    , containers
+    , deepseq
+    , hashable
+    , hasql
+    , hasql-pool
+    , hasql-th
+    , hasql-transaction
+    , http-client
+    , http-types
+    , mtl
+    , postgresql-binary
+    , scientific
+    , stm
+    , text
+    , time
+    , transformers
+    , unix
+    , uuid
+    , vector
+  default-language: Haskell2010

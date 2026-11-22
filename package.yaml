@@ -1,0 +1,62 @@
+name: wforch
+version: 0.1.0.0
+synopsis: Workflow orchestration engine with hierarchical state machines and dataflow
+category: Control
+license: BSD-3-Clause
+license-file: LICENSE
+author: Hugo DesRosiers
+copyright: Copyright (c) 2026 Hugo DesRosiers
+
+description: >-
+  Independent workflow orchestration engine based on hierarchical finite
+  state machines, compiled workflow specifications, durable execution,
+  activities, dataflow, history, migration, and PostgreSQL-backed runtime
+  operations. Extracted from the ai_hfsm demonstration project.
+
+extra-source-files:
+  - README.md
+  - CHANGELOG.md
+
+dependencies:
+  - aeson
+  - base >= 4.18 && < 5
+  - bytestring
+  - containers
+  - deepseq
+  - hashable
+  - hasql
+  - hasql-pool
+  - hasql-th
+  - hasql-transaction
+  - http-client
+  - http-types
+  - mtl
+  - postgresql-binary
+  - scientific
+  - stm
+  - text
+  - time
+  - transformers
+  - uuid
+  - vector
+  - unix
+
+default-extensions:
+  - OverloadedStrings
+  - DuplicateRecordFields
+  - OverloadedRecordDot
+
+ghc-options:
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-home-modules
+  - -Wpartial-fields
+  - -Wredundant-constraints
+
+library:
+  source-dirs: src
+  # Hpack discovers the renamed WfOrch.* modules automatically.
+  # Explicit exposed-modules can be introduced once the API stabilizes.
+

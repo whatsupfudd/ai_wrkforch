@@ -1,0 +1,88 @@
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE StrictData #-}
+
+-- | CT-05: registry guards one immutable digest per (machine, version).
+module WfOrch.Runtime.Registry
+  ( MachineKey(..), Registry(..), RegistryErr(..)
+  , emptyRegistry, machineKeyOf, register, registerMany, resolve, latest
+  ) where
+
+import Control.DeepSeq (NFData)
+import Control.Monad (foldM)
+import Data.Aeson (FromJSON, ToJSON)
+import Data.List (find)
+import Data.Map.Strict (Map)
+import qualified Data.Map.Strict as M
+import GHC.Generics (Generic)
+
+import WfOrch.Compile (CompiledMachine(..))
+import WfOrch.Core.Digest (SpecDigest)
+import WfOrch.Core.Name (MachineName)
+import WfOrch.Core.Version (MachineVersion)
+import WfOrch.Spec.Def (MachineSpec(..))
+
+data MachineKey = MachineKey
+  { name :: MachineName
+  , version :: MachineVersion
+  , digest :: SpecDigest
+  }
+  deriving stock (Eq, Ord, Show, Read, Generic)
+  deriving anyclass (NFData, ToJSON, FromJSON)
+
+data Registry st sg hf ctx cmd child = Registry
+  { byKey :: Map MachineKey (CompiledMachine st sg hf ctx cmd child)
+  , byName :: Map MachineName [MachineKey]
+  }
+
+data RegistryErr
+  = DuplicateMachineEr MachineKey
+  | VersionDigestCollisionEr MachineKey MachineKey
+  deriving stock (Eq, Ord, Show, Read, Generic)
+  deriving anyclass (NFData, ToJSON, FromJSON)
+
+emptyRegistry :: Registry st sg hf ctx cmd child
+emptyRegistry = Registry { byKey=M.empty, byName=M.empty }
+
+machineKeyOf :: CompiledMachine st sg hf ctx cmd child -> MachineKey
+machineKeyOf compiled = MachineKey
+  { name=compiled.spec.name
+  , version=compiled.spec.version
+  , digest=compiled.digest }
+
+register :: CompiledMachine st sg hf ctx cmd child
+         -> Registry st sg hf ctx cmd child
+         -> Either RegistryErr (Registry st sg hf ctx cmd child)
+register compiled registry =
+  let key = machineKeyOf compiled
+      existing = M.findWithDefault [] key.name registry.byName
+      conflict = find (\k -> k.version == key.version && k.digest /= key.digest) existing
+  in if M.member key registry.byKey
+       then Left (DuplicateMachineEr key)
+       else case conflict of
+         Just old -> Left (VersionDigestCollisionEr old key)
+         Nothing -> Right Registry
+           { byKey=M.insert key compiled registry.byKey
+           , byName=insertNameKey key registry.byName }
+
+registerMany :: [CompiledMachine st sg hf ctx cmd child]
+             -> Registry st sg hf ctx cmd child
+             -> Either RegistryErr (Registry st sg hf ctx cmd child)
+registerMany machines registry = foldM (flip register) registry machines
+
+resolve :: MachineKey -> Registry st sg hf ctx cmd child
+        -> Maybe (CompiledMachine st sg hf ctx cmd child)
+resolve key registry = M.lookup key registry.byKey
+
+-- | Most recently registered version (not a semver ordering).
+latest :: MachineName -> Registry st sg hf ctx cmd child -> Maybe MachineKey
+latest machineName registry = do
+  keys <- M.lookup machineName registry.byName
+  find (\key -> M.member key registry.byKey) keys
+
+insertNameKey :: MachineKey -> Map MachineName [MachineKey] -> Map MachineName [MachineKey]
+insertNameKey key = M.alter step key.name
+ where
+  step Nothing = Just [key]
+  step (Just keys) = Just (key : filter (/= key) keys)
